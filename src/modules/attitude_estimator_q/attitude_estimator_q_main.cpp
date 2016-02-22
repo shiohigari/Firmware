@@ -151,7 +151,7 @@ private:
 	float		_bias_max = 0.0f;
 	float		_vibration_warning_threshold = 1.0f;
 	hrt_abstime	_vibration_warning_timestamp = 0;
-	int		_ext_hdg_mode = 0;
+	int		_ext_hdg_mode = 2;
 
 	Vector<3>	_gyro;
 	Vector<3>	_accel;
