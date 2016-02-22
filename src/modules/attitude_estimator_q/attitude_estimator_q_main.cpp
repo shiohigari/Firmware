@@ -745,34 +745,15 @@ bool AttitudeEstimatorQ::update(float dt)
 	// Angular rate of correction
 	Vector<3> corr;
 
-	if (_ext_hdg_mode > 0 && _ext_hdg_good) {
-		if (_ext_hdg_mode == 1) {
-			// Vision heading correction
-			// Project heading to global frame and extract XY component
-			Vector<3> vision_hdg_earth = _q.conjugate(_vision_hdg);
-			float vision_hdg_err = _wrap_pi(atan2f(vision_hdg_earth(1), vision_hdg_earth(0)));
-			// Project correction to body frame
-			corr += _q.conjugate_inversed(Vector<3>(0.0f, 0.0f, -vision_hdg_err)) * _w_ext_hdg;
-		}
 
-		if (_ext_hdg_mode == 2) {
 			// Mocap heading correction
 			// Project heading to global frame and extract XY component
 			Vector<3> mocap_hdg_earth = _q.conjugate(_mocap_hdg);
 			float mocap_hdg_err = _wrap_pi(atan2f(mocap_hdg_earth(1), mocap_hdg_earth(0)));
 			// Project correction to body frame
 			corr += _q.conjugate_inversed(Vector<3>(0.0f, 0.0f, -mocap_hdg_err)) * _w_ext_hdg;
-		}
-	}
 
-	if (_ext_hdg_mode == 0  || !_ext_hdg_good) {
-		// Magnetometer correction
-		// Project mag field vector to global frame and extract XY component
-		Vector<3> mag_earth = _q.conjugate(_mag);
-		float mag_err = _wrap_pi(atan2f(mag_earth(1), mag_earth(0)) - _mag_decl);
-		// Project magnetometer correction to body frame
-		corr += _q.conjugate_inversed(Vector<3>(0.0f, 0.0f, -mag_err)) * _w_mag;
-	}
+
 
 	_q.normalize();
 
