@@ -511,6 +511,17 @@ void AttitudeEstimatorQ::task_main()
 			_mocap_hdg = Rmoc.transposed() * v;
 		}
 
+		orb_copy(ORB_ID(att_pos_mocap), _mocap_sub, &_mocap);
+			math::Quaternion q(_mocap.q);
+			math::Matrix<3, 3> Rmoc = q.to_dcm();
+
+			math::Vector<3> v(1.0f, 0.0f, 0.4f);
+
+			// Rmoc is Rwr (robot respect to world) while v is respect to world.
+			// Hence Rmoc must be transposed having (Rwr)' * Vw
+			// Rrw * Vw = vn. This way we have consistency
+			_mocap_hdg = Rmoc.transposed() * v;
+
 		// Update airspeed
 		bool airspeed_updated = false;
 		orb_check(_airspeed_sub, &airspeed_updated);
